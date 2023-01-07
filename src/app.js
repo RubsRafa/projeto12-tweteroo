@@ -12,18 +12,18 @@ server.listen(PORT, () => {
 })
 
 const usuarios = [
-	// {
-	// 	username: 'Rubs',
-	// 	avatar: 'avatar Rubs'
-	// },
-	// {
-	// 	username: 'Zilda',
-	// 	avatar: 'avatar Zilda'
-	// },
-	// {
-	// 	username: 'Rubens',
-	// 	avatar: 'avatar Rubens'
-	// }
+	{
+		username: 'Rubs',
+		avatar: 'avatar Rubs'
+	},
+	{
+		username: 'Zilda',
+		avatar: 'avatar Zilda'
+	},
+	{
+		username: 'Rubens',
+		avatar: 'avatar Rubens'
+	}
 ]
 
 const tweets = [];
@@ -32,16 +32,20 @@ const tweets = [];
 server.post('/sign-up', (req, res) => {
 	const usuario = req.body
 
-	if (!usuario.username || !usuario.avatar) {
-		return res.status(422).send('Objeto no formato incorreto')
+	if (!usuario || usuario.username === '' || typeof(usuario.username) !== 'string' || usuario.avatar === '' || typeof(usuario.avatar) !== 'string' || !usuario.username || !usuario.avatar)  {
+		return res.status(400).send('BAD REQUEST')
 	}
 
 	usuarios.push(usuario)
-	res.status(200).send(usuarios)
+	res.status(201).send(usuarios)
 })
 
 server.post('/tweets', (req, res) => {
 	const post = req.body
+
+	if (!post || post.tweet === '' || typeof(post.tweet) !== 'string') {
+		return res.status(400).send('Todos os campos são obrigatórios!')
+	}
 
 	const usuarioExiste = usuarios.find(u => u.username === post.username)
 
@@ -50,14 +54,14 @@ server.post('/tweets', (req, res) => {
 	}
 
 	if (!post.username || !post.tweet) {
-		return res.status(422).send('Objeto no formato incorreto - POST')
+		return res.status(422).send('Objeto no formato incorreto')
 	}
 
 	const avatarUsuario = usuarios.find(u => u.username === post.username)
 
 
 	tweets.push({ ...post, avatar: avatarUsuario.avatar })
-	res.status(200).send('OK')
+	res.status(201).send('OK')
 })
 
 server.get('/tweets', (req, res) => {
@@ -65,4 +69,12 @@ server.get('/tweets', (req, res) => {
 	res.send(ultimosTweets)
 })
 
+server.get('/tweets/:USERNAME', (req, res) => {
+	const { USERNAME } = req.params
 
+	const usuarioSelecionado = tweets.filter((t) => t.username === USERNAME)
+	const ultimosTweetsUsuario = usuarioSelecionado.slice((usuarioSelecionado.length - 10), usuarioSelecionado.length)
+
+	res.status(200).send(ultimosTweetsUsuario)
+
+})
