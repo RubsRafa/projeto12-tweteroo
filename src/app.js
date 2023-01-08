@@ -9,9 +9,9 @@ server.use(express.json());
 const PORT = 5000;
 server.listen(PORT, () => {
 	console.log(`SERVIDOR FUNCIONANDO NA PORTA ${PORT}`);
-})
+});
 
-const usuarios = []
+const usuarios = [];
 
 const tweets = [];
 
@@ -19,13 +19,20 @@ const tweets = [];
 server.post('/sign-up', (req, res) => {
 	const usuario = req.body;
 
-	if (!usuario || usuario.username === '' || typeof(usuario.username) !== 'string' || usuario.avatar === '' || typeof(usuario.avatar) !== 'string' || !usuario.username || !usuario.avatar)  {
+	if(!usuario || !usuario.username || !usuario.avatar){
+		return res.status(400).send('BAD REQUEST');
+	} 
+	if(usuario.username === '' || typeof(usuario.username) !== 'string'){
+		return res.status(400).send('BAD REQUEST');
+	}
+	if (usuario.avatar === '' || typeof(usuario.avatar) !== 'string') {
 		return res.status(400).send('BAD REQUEST');
 	}
 
+
 	usuarios.push(usuario);
 	return res.status(201).send(usuarios);
-})
+});
 
 server.post('/tweets', (req, res) => {
 	const post = req.body;
@@ -49,12 +56,12 @@ server.post('/tweets', (req, res) => {
 
 	tweets.push({ ...post, avatar: avatarUsuario.avatar });
 	return res.status(201).send('OK');
-})
+});
 
 server.get('/tweets', (req, res) => {
 	const ultimosTweets = tweets.slice((tweets.length - 10), tweets.length);
 	return res.send(ultimosTweets);
-})
+});
 
 server.get('/tweets/:USERNAME', (req, res) => {
 	const { USERNAME } = req.params;
@@ -64,4 +71,4 @@ server.get('/tweets/:USERNAME', (req, res) => {
 
 	return res.status(200).send(ultimosTweetsUsuario);
 
-})
+});
