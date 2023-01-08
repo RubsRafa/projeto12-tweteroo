@@ -11,20 +11,7 @@ server.listen(PORT, () => {
 	console.log(`SERVIDOR FUNCIONANDO NA PORTA ${PORT}`);
 })
 
-const usuarios = [
-	{
-		username: 'Rubs',
-		avatar: 'avatar Rubs'
-	},
-	{
-		username: 'Zilda',
-		avatar: 'avatar Zilda'
-	},
-	{
-		username: 'Rubens',
-		avatar: 'avatar Rubens'
-	}
-]
+const usuarios = []
 
 const tweets = [];
 
